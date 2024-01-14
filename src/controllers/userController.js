@@ -10,6 +10,18 @@ router.get('/login', (req, res) => {
     res.render('users/login')
 });
 
+router.post('/login', async (req, res) => {
+    const userData = req.body;
+
+    try {
+        const token = await userManager.login(userData);
+        res.cookie(COOKIE_NAME, token);
+        res.redirect('/');
+    } catch (err) {
+        res.render('users/login');
+    }
+})
+
 router.post('/register', async (req, res) => {
     const userData = req.body;
 
@@ -18,8 +30,13 @@ router.post('/register', async (req, res) => {
         res.cookie(COOKIE_NAME, token);
         res.redirect('/');
     } catch (err) {
-        throw new Error(err);
+        res.render('uses/register');
     }
+});
+
+router.get('/logout', (req, res) => {
+    res.clearCookie(COOKIE_NAME);
+    res.redirect('/');
 })
 
 module.exports = router;
